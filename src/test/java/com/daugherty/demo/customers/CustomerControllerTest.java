@@ -1,7 +1,7 @@
 package com.daugherty.demo.customers;
 
+import com.daugherty.demo.BaseTest;
 import com.daugherty.demo.customers.entity.Customer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -20,8 +18,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+// <-- SpringRunner is needed so that a "real" SpringBoot context will be initialized. We want this so that we can make "real" REST calls.
 @RunWith(SpringRunner.class)
-public class CustomerControllerTest {
+public class CustomerControllerTest extends BaseTest {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
@@ -33,22 +32,12 @@ public class CustomerControllerTest {
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
     /**
-     * Used for random test values
-     */
-    public static final PodamFactory podamFactory = new PodamFactoryImpl();
-
-    /**
-     * Serialization/Deserialization
-     */
-    public static final ObjectMapper objectMapper = new ObjectMapper();
-
-    /**
-     * Mock SpringBoot
+     * Create a "mock" a client that can call the SpringRunner-ed instance of SpringBoot.
      */
     private MockMvc mockMvc;
 
     /**
-     * Class under test
+     * Class under test (spied to test protected methods)
      */
     private CustomerController customerController_spy;
 
@@ -56,16 +45,14 @@ public class CustomerControllerTest {
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
-    /**
-     * Wire dependencies.
-     */
     @Before
     public void setup() {
 
         // Create a spy so that protected methods can/may be mocked
         customerController_spy = spy(new CustomerController(customerService_mock));
 
-        // Set up Mock MVC for HTTP calls
+        // Set up Mock MVC for HTTP calls. This makes Spring send requests to our spied controller, instead of whatever
+        // controller component it would have created and wired up itself.
         mockMvc = MockMvcBuilders.standaloneSetup(customerController_spy).build();
     }
 
@@ -81,12 +68,14 @@ public class CustomerControllerTest {
         Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
         Integer customerId = expectedCustomer.getId();
 
-        // Dependency Mocks
+        // Dependency Mocks (note that is mock only exists in the spied controller that was initialized with MockMvc)
         doReturn(expectedCustomer).when(customerService_mock).getCustomer(customerId);
 
-        // WHEN the customer API endpoint is called
+        // WHEN the customer API endpoint is called (this is both a GET call and an assertion that OK is returned)
         String uri = String.format("/v1/customers/%s", customerId);
         MvcResult result = this.mockMvc.perform(get(uri)).andExpect(status().isOk()).andReturn();
+
+        // We have to deserialize because JSON was returned, not an object, proving it was a "real" REST call.
         Customer actualCustomer = objectMapper.readValue(result.getResponse().getContentAsByteArray(), Customer.class);
 
         // THEN the Customer with the given ID should be returned.

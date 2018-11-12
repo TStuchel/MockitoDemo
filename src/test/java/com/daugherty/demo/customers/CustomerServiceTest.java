@@ -1,18 +1,19 @@
 package com.daugherty.demo.customers;
 
+import com.daugherty.demo.BaseTest;
 import com.daugherty.demo.customers.entity.Customer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
-public class CustomerServiceTest {
+// <-- Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring. This is all
+// basic Mockito and JUnit.
+public class CustomerServiceTest extends BaseTest {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
@@ -24,12 +25,7 @@ public class CustomerServiceTest {
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
     /**
-     * Used for random test values
-     */
-    public static final PodamFactory podamFactory = new PodamFactoryImpl();
-
-    /**
-     * Class under test
+     * Class under test (spied to test protected methods)
      */
     private CustomerService customerService_spy;
 
@@ -39,7 +35,11 @@ public class CustomerServiceTest {
 
     @Before
     public void setUp() {
+
+        // Initialize Mockito mocked dependencies
         MockitoAnnotations.initMocks(this);
+
+        // Create a spy so that protected methods can/may be mocked
         customerService_spy = spy(new CustomerService(customerRepository_mock));
     }
 
