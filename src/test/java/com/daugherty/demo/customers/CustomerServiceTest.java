@@ -11,14 +11,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
-// <-- Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring. This is all
-// basic Mockito and JUnit.
+
+/**
+ * DEVELOPER NOTE:  Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring. This is all
+ * basic Mockito and JUnit. Don't involve Spring unless you have to; it just slows down your tests.
+ */
 public class CustomerServiceTest extends BaseTest {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
     @Mock
-    private final CustomerRepository customerRepository_mock = null;
+    private CustomerRepository customerRepository_mock;
 
     // -----------------------------------------------------------------------------------------------------------------
 

@@ -6,7 +6,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,21 +18,34 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// <-- SpringRunner is needed so that a "real" SpringBoot context will be initialized. We want this so that we can make "real" REST calls.
+/**
+ * DEVELOPER NOTE: This @RunWith(SpringRunner) is needed so that a "real" SpringBoot context will be initialized. We want
+ * this so that we can make "real" REST calls. While it is technically possible to test directly against the
+ * CustomerController class, it's useful to make sure that we've wired up all of those @RestController annotations
+ * correctly, including properly handling HTTP status code responses, URL mappings, and content type configurations.
+ */
 @RunWith(SpringRunner.class)
 public class CustomerControllerTest extends BaseTest {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
-    @MockBean
-    private final CustomerService customerService_mock = null;
+    /**
+     * DEVELOPER NOTE: This @Mock annotation is part of Mockito, but since we annotated this class with SpringRunner,
+     * SpringRunner will initialize all of Mockito's annotations for us, so it will cause this variable to be set
+     * prior to setup() being called.
+     */
+    @Mock
+    private CustomerService customerService_mock;
 
     // -----------------------------------------------------------------------------------------------------------------
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
     /**
-     * Create a "mock" a client that can call the SpringRunner-ed instance of SpringBoot.
+     * Create a "mock" client that can call the SpringRunner-ed instance of SpringBoot. We could have used the
+     * annotation @AutoConfigureMockMvc on this class and used @Autowired on this field, but due to the preferred form
+     * of explicitly building and spying the tested CustomerController we want to manually wire this up in setup()
+     * instead.
      */
     private MockMvc mockMvc;
 
@@ -51,8 +64,8 @@ public class CustomerControllerTest extends BaseTest {
         // Create a spy so that protected methods can/may be mocked
         customerController_spy = spy(new CustomerController(customerService_mock));
 
-        // Set up Mock MVC for HTTP calls. This makes Spring send requests to our spied controller, instead of whatever
-        // controller component it would have created and wired up itself.
+        // Set up Mock MVC for HTTP calls. DEVELOPER NOTE: This makes Spring send requests to our spied controller,
+        // instead of whatever controller component it would have created and wired up itself.
         mockMvc = MockMvcBuilders.standaloneSetup(customerController_spy).build();
     }
 

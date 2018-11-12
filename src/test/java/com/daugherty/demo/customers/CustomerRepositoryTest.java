@@ -10,8 +10,12 @@ import org.mockito.Spy;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
-// <-- Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring. This is all
-// basic Mockito and JUnit.
+/**
+ * DEVELOPER NOTE:  Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring. This is all
+ * basic Mockito and JUnit. Don't involve Spring unless you have to; it just slows down your tests.
+ * <p>
+ * Comments have been added to this class to indicate the order that JUnit and Mockito execute this class.
+ */
 public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instantiates a new instance of this class for each @Test
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
@@ -28,7 +32,7 @@ public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instanti
 
     @Before // (2) <-- JUnit calls the @Before method
     public void setUp() {
-        MockitoAnnotations.initMocks(this);  // <-- (3) This line is executed
+        MockitoAnnotations.initMocks(this);  // <-- (3) This line is executed to have Mockito scan this class for Mockito annotations
     }
 
     /**
