@@ -2,17 +2,17 @@ package com.daugherty.demo.customers;
 
 import com.daugherty.demo.BaseTest;
 import com.daugherty.demo.customers.entity.Customer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
 /**
- * DEVELOPER NOTE:  Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring. This is all
- * basic Mockito and JUnit. Don't involve Spring unless you have to; it just slows down your tests.
+ * DEVELOPER NOTE:  Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring.
+ * This is all basic Mockito and JUnit. Don't involve Spring unless you have to; it just slows down your tests.
  * <p>
  * Comments have been added to this class to indicate the order that JUnit and Mockito execute this class.
  */
@@ -30,7 +30,7 @@ public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instanti
 
     // ----------------------------- TEST METHODS -----------------------------
 
-    @Before // (2) <-- JUnit calls the @Before method
+    @BeforeEach // (2) <-- JUnit calls the @BeforeEach method
     public void setUp() {
         MockitoAnnotations.initMocks(this);  // <-- (3) This line is executed to have Mockito scan this class for Mockito annotations
     }
@@ -54,7 +54,7 @@ public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instanti
         Customer actualCustomer = demoRepository_spy.getCustomer(customerId);
 
         // Assert
-        assertEquals("The expected customer should be returned", expectedCustomer, actualCustomer);
+        assertEquals(expectedCustomer, actualCustomer, "The expected customer should be returned");
     }
 
     /**
@@ -73,8 +73,8 @@ public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instanti
         Customer customer = demoRepository_spy.readFromDatabase(customerId);
 
         // THEN the customer record with the given ID should be read from the database and returned as a Customer object.
-        assertEquals("The ID should be correct", customerId, customer.getId());
-        assertEquals("The full name should be correct", "a fake name", customer.getFullName());
+        assertEquals(customerId, customer.getId(), "The ID should be correct");
+        assertEquals("a fake name", customer.getFullName(), "The full name should be correct");
     }
 
     // ------------------------------------------------------------------------

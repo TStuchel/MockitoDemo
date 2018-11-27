@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.0.RELEASE")
     }
 }
 
@@ -26,10 +26,11 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("org.projectlombok:lombok:1.18.2")
-    compile("org.springframework.boot:spring-boot-starter-web")
+    compile group: 'org.projectlombok', name: 'lombok'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
 
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile("uk.co.jemos.podam:podam:7.2.0.RELEASE")
-    testCompile("junit:junit")
+    testCompile group: 'org.springframework', name: 'spring-test'
+    testCompile group: 'org.mockito', name: 'mockito-core'
+    testCompile group: 'uk.co.jemos.podam', name: 'podam', version: '7.2.0.RELEASE'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params'
 }

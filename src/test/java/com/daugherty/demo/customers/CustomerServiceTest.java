@@ -2,13 +2,13 @@ package com.daugherty.demo.customers;
 
 import com.daugherty.demo.BaseTest;
 import com.daugherty.demo.customers.entity.Customer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 
@@ -36,7 +36,7 @@ public class CustomerServiceTest extends BaseTest {
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         // Initialize Mockito mocked dependencies
