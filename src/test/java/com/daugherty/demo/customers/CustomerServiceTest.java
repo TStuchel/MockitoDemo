@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
  * DEVELOPER NOTE:  Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring. This is all
  * basic Mockito and JUnit. Don't involve Spring unless you have to; it just slows down your tests.
  */
-public class CustomerServiceTest extends BaseTest {
+class CustomerServiceTest extends BaseTest {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
@@ -37,7 +37,7 @@ public class CustomerServiceTest extends BaseTest {
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         // Initialize Mockito mocked dependencies
         MockitoAnnotations.initMocks(this);
@@ -52,7 +52,7 @@ public class CustomerServiceTest extends BaseTest {
      * THEN the Customer with the given ID should be returned.
      */
     @Test
-    public void getCustomer() {
+    void getCustomer() {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
         Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);

@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import java.time.ZonedDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
@@ -16,7 +18,7 @@ import static org.mockito.Mockito.doReturn;
  * <p>
  * Comments have been added to this class to indicate the order that JUnit and Mockito execute this class.
  */
-public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instantiates a new instance of this class for each @Test
+class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instantiates a new instance of this class for each @Test
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
@@ -24,14 +26,15 @@ public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instanti
      * Class under test (spied to test protected methods)
      */
     @Spy // <- (4) <-- Mockito finds this @Spy, creates a spy instance of this class, and sets this variable
-    private CustomerRepository demoRepository_spy;
+    private CustomerRepository customerRepository_spy;
 
     // -----------------------------------------------------------------------------------------------------------------
 
     // ----------------------------- TEST METHODS -----------------------------
 
-    @BeforeEach // (2) <-- JUnit calls the @BeforeEach method
-    public void setUp() {
+    @BeforeEach
+        // (2) <-- JUnit calls the @BeforeEach method
+    void setUp() {
         MockitoAnnotations.initMocks(this);  // <-- (3) This line is executed to have Mockito scan this class for Mockito annotations
     }
 
@@ -40,18 +43,19 @@ public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instanti
      * WHEN an attempt is made to read the Customer record from the database
      * THEN the customer record with the given ID should be read from the database and returned as a Customer object.
      */
-    @Test // <!-- (5) JUnit calls the test method of the (per test) DemoRepository instance
-    public void getCustomer() {
+    @Test
+    // <-- (5) JUnit calls the test method of the (per test) DemoRepository instance
+    void getCustomer() {
 
         // Prepare
         Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
         Integer customerId = expectedCustomer.getId();
 
         // Mock  // <-- (6) We 'override' the readFromDatabase() method so that it returns the data we want
-        doReturn(expectedCustomer).when(demoRepository_spy).readFromDatabase(customerId);
+        doReturn(expectedCustomer).when(customerRepository_spy).readFromDatabase(customerId);
 
         // Call // <-- (7) Calls the real getCustomer(), but not the real readFromDatabase()
-        Customer actualCustomer = demoRepository_spy.getCustomer(customerId);
+        Customer actualCustomer = customerRepository_spy.getCustomer(customerId);
 
         // Assert
         assertEquals(expectedCustomer, actualCustomer, "The expected customer should be returned");
@@ -63,18 +67,41 @@ public class CustomerRepositoryTest extends BaseTest { // <-- (1) JUnit instanti
      * THEN the customer record with the given ID should be read from the database and returned as a Customer object.
      */
     @Test
-    public void readFromDatabase() {
+    void readFromDatabase() {
 
         //  GIVEN a Customer with a given ID is in the database
         Integer customerId = -999;
 
         // WHEN an attempt is made to read the Customer record from the database
         // @TODO implement the real readFromDatabase() method
-        Customer customer = demoRepository_spy.readFromDatabase(customerId);
+        Customer customer = customerRepository_spy.readFromDatabase(customerId);
 
         // THEN the customer record with the given ID should be read from the database and returned as a Customer object.
         assertEquals(customerId, customer.getId(), "The ID should be correct");
         assertEquals("a fake name", customer.getFullName(), "The full name should be correct");
+    }
+
+    /**
+     * GIVEN a customer record
+     * WHEN the customer's needs to be refreshed to indicate the last time that it was read from
+     * the database
+     * THEN the customer record's "last read" timestamp should be updated to "now".
+     */
+    @Test
+    void refreshCustomerLastReadTimestamp() {
+
+        // GIVEN a customer record
+        Customer customer = podamFactory.manufacturePojo(Customer.class);
+        ZonedDateTime expectedTimestamp = podamFactory.manufacturePojo(ZonedDateTime.class);
+
+        // Mock
+        doReturn(expectedTimestamp).when(customerRepository_spy).now();
+
+        // WHEN the customer's "last read" timestamp needs to be updated
+        customerRepository_spy.refreshCustomerLastReadTimestamp(customer);
+
+        // THEN the customer record should have a timestamp indicating the last time that it was read from the database (now).
+        assertEquals(expectedTimestamp, customer.getLastReadTimestamp());
     }
 
     // ------------------------------------------------------------------------

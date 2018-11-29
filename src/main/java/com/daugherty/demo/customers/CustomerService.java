@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
  * @see com.daugherty.demo.customers.CustomerRepository
  */
 @Service
-public class CustomerService {
+class CustomerService {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
@@ -46,7 +46,7 @@ public class CustomerService {
      * DEVELOPER NOTE: Again we're using constructor-injection instead of field-injection. Embrace it.
      */
     @Autowired
-    public CustomerService(CustomerRepository customerRepository) {
+    CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
 
@@ -61,11 +61,8 @@ public class CustomerService {
      * just a pass-through to the CustomerRepository. There might be a temptation to have the Controller talk directly
      * to the Repository, but this is a bad idea. It's best to respect the 3-layered nature of the application
      * architecture. Inevitably, you'll have to add some real business logic, and you'll need a place to put it.
-     *
-     * @param customerId
-     * @return
      */
-    public Customer getCustomer(Integer customerId) {
+    Customer getCustomer(Integer customerId) {
         return this.customerRepository.getCustomer(customerId);
     }
 

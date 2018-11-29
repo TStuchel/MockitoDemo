@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Application.class})
-public class CustomerControllerTest extends BaseTest {
+class CustomerControllerTest extends BaseTest {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
@@ -64,7 +65,7 @@ public class CustomerControllerTest extends BaseTest {
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         // Initialize Mockito mocked dependencies
         MockitoAnnotations.initMocks(this);
@@ -83,7 +84,7 @@ public class CustomerControllerTest extends BaseTest {
      * THEN the Customer with the given ID should be returned.
      */
     @Test
-    public void getCustomer_success() throws Exception {
+    void getCustomer_success() throws Exception {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
         Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
@@ -101,7 +102,9 @@ public class CustomerControllerTest extends BaseTest {
         Customer actualCustomer = objectMapper.readValue(result.getResponse().getContentAsByteArray(), Customer.class);
 
         // THEN the Customer with the given ID should be returned.
-        assertEquals(expectedCustomer, actualCustomer);
+        assertEquals(expectedCustomer.getId(), actualCustomer.getId());
+        assertEquals(expectedCustomer.getFullName(), actualCustomer.getFullName());
+        assertTrue(expectedCustomer.getLastReadTimestamp().isEqual(actualCustomer.getLastReadTimestamp()));
 
         // Verify dependency mocks
         verify(customerService_mock, times(1)).getCustomer(customerId);
@@ -113,7 +116,7 @@ public class CustomerControllerTest extends BaseTest {
      * THEN a BAD REQUEST should be returned.
      */
     @Test
-    public void getCustomer_invalidCustomerId() throws Exception {
+    void getCustomer_invalidCustomerId() throws Exception {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
         Integer customerId = -RandomUtils.nextInt(0, 99999);
@@ -139,7 +142,7 @@ public class CustomerControllerTest extends BaseTest {
      * THEN a INTERNAL SERVER ERROR should be returned containing an error message.
      */
     @Test
-    public void getCustomer_internalServerError() throws Exception {
+    void getCustomer_internalServerError() throws Exception {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
         Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
@@ -174,7 +177,7 @@ public class CustomerControllerTest extends BaseTest {
      */
     @ParameterizedTest
     @CsvSource({", false", "-999, false", "0, false", "1234, true"})
-    public void isValidCustomerId(Integer customerId, boolean expected) {
+    void isValidCustomerId(Integer customerId, boolean expected) {
         assertEquals(expected, customerController_spy.isValidCustomerId(customerId));
     }
 

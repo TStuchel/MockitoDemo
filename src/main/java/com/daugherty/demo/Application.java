@@ -20,13 +20,10 @@ public class Application {
 
     /**
      * DEVELOPER NOTE: There must always be a main() for a Java application.
-     *
-     * @param args
      */
     public static void main(String[] args) {
 
         // Launch Spring(Boot)
         SpringApplication.run(Application.class, args);
     }
-
 }

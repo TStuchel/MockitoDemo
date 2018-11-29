@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.ResponseEntity.status;
 
 /**
  * This REST API controller is responsible for providing an API for managing Customer entities.
@@ -52,7 +54,7 @@ public class CustomerController {
      * before Spring creates it.
      */
     @Autowired
-    public CustomerController(CustomerService customerService) {
+    CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 
@@ -71,12 +73,12 @@ public class CustomerController {
      * bad form to just return 200 for "good" and 500 for "bad". There's a rich collection of choices to return specific
      * HTTP responses depending on the result of the call. See: https://www.restapitutorial.com/httpstatuscodes.html
      */
-    @RequestMapping(method = RequestMethod.GET, path = "/v1/customers/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/v1/customers/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getCustomer(@PathVariable("customerId") Integer customerId) {
 
         // Verify contract
         if (!this.isValidCustomerId(customerId)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error("Invalid customer ID [" + customerId + "]"));
+            return status(HttpStatus.BAD_REQUEST).body(new Error("Invalid customer ID [" + customerId + "]"));
         }
 
         try {
@@ -86,7 +88,7 @@ public class CustomerController {
             Customer customer = customerService.getCustomer(customerId);
 
             // Return OK and the Customer
-            return ResponseEntity.ok().body(customer);
+            return ok().body(customer);
 
         }
         // DEVELOPER NOTE: Another option in this case is to use Spring's ResponseEntityExceptionHandler framework.
@@ -94,7 +96,7 @@ public class CustomerController {
         catch (Error ex) {
 
             // Respond INTERNAL_SERVER_ERROR
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex);
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex);
         }
     }
 
@@ -104,11 +106,8 @@ public class CustomerController {
 
     /**
      * Returns whether or not the given customer ID is valid.
-     *
-     * @param customerId
-     * @return
      */
-    protected boolean isValidCustomerId(Integer customerId) {
+    boolean isValidCustomerId(Integer customerId) {
         return customerId != null && customerId > 0;
     }
 

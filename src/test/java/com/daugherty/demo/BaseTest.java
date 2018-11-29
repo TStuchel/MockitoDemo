@@ -19,7 +19,7 @@ public abstract class BaseTest {
     /**
      * Serialization/Deserialization
      */
-    protected static final ObjectMapper objectMapper = new ObjectMapper();
+    protected static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     // -----------------------------------------------------------------------------------------------------------------
 

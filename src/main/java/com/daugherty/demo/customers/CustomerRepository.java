@@ -3,6 +3,8 @@ package com.daugherty.demo.customers;
 import com.daugherty.demo.customers.entity.Customer;
 import org.springframework.stereotype.Repository;
 
+import java.time.ZonedDateTime;
+
 /**
  * This repository class provides methods to return Customer data from the database.
  * <p>
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Repository;
  * that this class is.
  */
 @Repository
-public class CustomerRepository {
+class CustomerRepository {
 
     // ------------------------------------------------ PUBLIC METHODS -------------------------------------------------
 
@@ -28,7 +30,7 @@ public class CustomerRepository {
      * @param customerId The ID of the customer
      * @return the Customer with the given ID
      */
-    public Customer getCustomer(Integer customerId) {
+    Customer getCustomer(Integer customerId) {
 
         // Read the customer from the database
         Customer customer = this.readFromDatabase(customerId);
@@ -49,7 +51,7 @@ public class CustomerRepository {
      * @param customerId The ID of the customer
      * @return the Customer with the given ID
      */
-    protected Customer readFromDatabase(Integer customerId) {
+    Customer readFromDatabase(Integer customerId) {
 
         // @TODO: Implement reading the customer from the database instead of returning this fake object
         Customer customer = new Customer();
@@ -57,6 +59,21 @@ public class CustomerRepository {
         customer.setFullName("a fake name");
 
         return customer;
+    }
+
+    /**
+     * Updates the given Customer's last read timestamp. DEVELOPER NOTE: There's probably no need for such a method, but
+     * it is here to demonstrate the "change state" pattern of unit testing as well as how to test time-based methods.
+     */
+    void refreshCustomerLastReadTimestamp(Customer customer) {
+        customer.setLastReadTimestamp(this.now());
+    }
+
+    /**
+     * Returns the current time.
+     */
+    ZonedDateTime now() {
+        return ZonedDateTime.now();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
