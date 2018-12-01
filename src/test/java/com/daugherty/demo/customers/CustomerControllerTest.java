@@ -37,8 +37,8 @@ class CustomerControllerTest extends BaseTest {
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
     /**
-     * DEVELOPER NOTE: This @Mock annotation is part of Mockito, and will be re-initialized for every @Test method
-     * via the @BeforeEach method.
+     * DEVELOPER NOTE: This @Mock annotation is part of Mockito, and will be re-initialized for every @Test method via
+     * the @BeforeEach method.
      */
     @Mock
     private CustomerService customerService_mock;

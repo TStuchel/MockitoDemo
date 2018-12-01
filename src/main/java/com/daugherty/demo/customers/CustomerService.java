@@ -7,19 +7,19 @@ import org.springframework.stereotype.Service;
 /**
  * This class provides business functionality for managing Customers.
  * <p>
- * DEVELOPER NOTE: This is the second, and middle, layer of a web application. It is frequently called the "service layer"
- * or "business logic layer". This layer is the core of the application, containing the classes that actually provide
- * business value and define the real functionality of the application. Previously, the API/Controller layer cared only
- * about receiving and returning JSON requests. This class is the real meat of the system... and theoretically shouldn't
- * know anything about the fact that it "lives" in a web application. There's nothing related to JSON, REST, HTTP, or
- * web services here.
+ * DEVELOPER NOTE: This is the second, and middle, layer of a web application. It is frequently called the "service
+ * layer" or "business logic layer". This layer is the core of the application, containing the classes that actually
+ * provide business value and define the real functionality of the application. Previously, the API/Controller layer
+ * cared only about receiving and returning JSON requests. This class is the real meat of the system... and
+ * theoretically shouldn't know anything about the fact that it "lives" in a web application. There's nothing related
+ * to JSON, REST, HTTP, or web services here.
  * <p>
  * This class is annotated as a @Service, which is just an alias for the annotation @Component. Some things care about
- * the @Service annotation, but for the most part it's just a way to be a bit more descriptive about the kind of component
- * that this class is.
+ * the @Service annotation, but for the most part it's just a way to be a bit more descriptive about the kind of
+ * component that this class is.
  * <p>
- * Also, this layer shouldn't care from *where* it gets the data that it operates on. Service classes shouldn't
- * know anything about databases, external web services, file systems, or any other technicalities of shuttling data
+ * Also, this layer shouldn't care from *where* it gets the data that it operates on. Service classes shouldn't  know
+ * anything about databases, external web services, file systems, or any other technicalities of shuttling data
  * around the system. That's the job of the final layer.
  *
  * @see com.daugherty.demo.customers.CustomerRepository

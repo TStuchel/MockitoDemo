@@ -18,7 +18,8 @@ import static org.springframework.http.ResponseEntity.status;
  * DEVELOPER NOTE: The first layer of a web application is the "API" layer. In this case, this layer is implemented
  * using a REST-ful endpoint that exposes a way to retrieve a Customer object via the Customer's ID.
  * <p>
- * The @RestController annotation tells Spring that this class is a "controller" that can handle incoming HTTP requests.
+ * The @RestController annotation tells Spring that this class is a "controller" that can handle incoming HTTP
+ * requests.
  *
  * @see com.daugherty.demo.customers.CustomerService next!
  */
@@ -29,9 +30,9 @@ public class CustomerController {
 
     /**
      * DEVELOPER NOTE: This class has a dependency (requires... needs it to work... can't live without it) a class from
-     * the next "service" layer of the application called "CustomerService". It's pretty common to have a suffixed naming
-     * convention for classes in each layer. Note that this variable is both private and "final". Once the variable is
-     * set (in the constructor), it will never be changed again.
+     * the next "service" layer of the application called "CustomerService". It's pretty common to have a suffixed
+     * naming convention for classes in each layer. Note that this variable is both private and "final". Once the
+     * variable is set (in the constructor), it will never be changed again.
      */
     private final CustomerService customerService;
 
@@ -49,9 +50,9 @@ public class CustomerController {
      * CustomerService. Doing dependency injection this way ends up being better than "field injection" where the
      * annotation @Autowired would be on the customerService member vairable. There are quite a few real and stylistic
      * reasons for this, but it's best to get used to this form intead of autowiring member variables. Dependency
-     * injection this way forces Spring to build classes in a true dependency-heirarchical order. Field injection
-     * lets Spring build objects in any order, and this can result in weird behavior if you try to access a dependency
-     * before Spring creates it.
+     * injection this way forces Spring to build classes in a true dependency-heirarchical order. Field injection lets
+     * Spring build objects in any order, and this can result in weird behavior if you try to access a dependency before
+     * Spring creates it.
      */
     @Autowired
     CustomerController(CustomerService customerService) {

@@ -13,8 +13,8 @@ import static org.mockito.Mockito.*;
 
 
 /**
- * DEVELOPER NOTE:  Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring. This is all
- * basic Mockito and JUnit. Don't involve Spring unless you have to; it just slows down your tests.
+ * DEVELOPER NOTE:  Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring.
+ * This is all basic Mockito and JUnit. Don't involve Spring unless you have to; it just slows down your tests.
  */
 class CustomerServiceTest extends BaseTest {
 
