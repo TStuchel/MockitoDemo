@@ -2,13 +2,13 @@ package com.daugherty.demo.customers;
 
 import com.daugherty.demo.Application;
 import com.daugherty.demo.BaseTest;
+import com.daugherty.demo.RestExceptionHandler;
 import com.daugherty.demo.customers.entity.Customer;
+import com.daugherty.demo.exception.BusinessException;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * responses, URL mappings, and content type configurations.
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {Application.class})
+@ContextConfiguration(classes = {Application.class, RestExceptionHandler.class})
 class CustomerControllerTest extends BaseTest {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
@@ -75,7 +75,7 @@ class CustomerControllerTest extends BaseTest {
 
         // Set up Mock MVC for HTTP calls. DEVELOPER NOTE: This makes Spring send requests to our spied controller,
         // instead of whatever controller component it would have created and wired up itself.
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController_spy).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerController_spy).setControllerAdvice(new RestExceptionHandler()).build();
     }
 
     /**
@@ -91,7 +91,6 @@ class CustomerControllerTest extends BaseTest {
         Integer customerId = expectedCustomer.getId();
 
         // Dependency Mocks (note that is mock only exists in the spied controller that was initialized with MockMvc)
-        doReturn(true).when(customerController_spy).isValidCustomerId(customerId);
         doReturn(expectedCustomer).when(customerService_mock).getCustomer(customerId);
 
         // WHEN the customer API endpoint is called (this is both a GET call and an assertion that OK is returned)
@@ -112,17 +111,18 @@ class CustomerControllerTest extends BaseTest {
 
     /**
      * GIVEN an invalid customer ID
-     * WHEN the GET customer API endpoint is called
-     * THEN a BAD REQUEST should be returned.
+     * WHEN the GET customer API endpoint is called and a business exception is thrown
+     * THEN a BAD REQUEST should be returned containing the error message.
      */
     @Test
-    void getCustomer_invalidCustomerId() throws Exception {
+    void getCustomer_businessException() throws Exception {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
         Integer customerId = -RandomUtils.nextInt(0, 99999);
+        String message = "Invalid customer ID [" + customerId + "]";
 
         // Dependency Mocks
-        doReturn(false).when(customerController_spy).isValidCustomerId(customerId);
+        doThrow(new BusinessException(message)).when(customerService_mock).getCustomer(customerId);
 
         // WHEN the customer API endpoint is called
         String uri = String.format("/v1/customers/%s", customerId);
@@ -130,15 +130,15 @@ class CustomerControllerTest extends BaseTest {
         Error error = objectMapper.readValue(result.getResponse().getContentAsByteArray(), Error.class);
 
         // THEN a BAD REQUEST should be returned containing an error message.
-        assertEquals("Invalid customer ID [" + customerId + "]", error.getMessage());
+        assertEquals(message, error.getMessage());
 
         // Verify dependency mocks
-        verify(customerController_spy).isValidCustomerId(customerId);
+        verify(customerController_spy).getCustomer(customerId);
     }
 
     /**
      * GIVEN a valid customer ID and a customer with that ID is in the system
-     * WHEN the GET customer API endpoint is called, but an error is thrown while retrieving the customer
+     * WHEN the GET customer API endpoint is called, but an unexpected exception is thrown while retrieving the customer
      * THEN a INTERNAL SERVER ERROR should be returned containing an error message.
      */
     @Test
@@ -149,9 +149,8 @@ class CustomerControllerTest extends BaseTest {
         Integer customerId = expectedCustomer.getId();
 
         // Dependency Mocks
-        String expectedErrorMsg = "An error has occurred.";
-        doReturn(true).when(customerController_spy).isValidCustomerId(customerId);
-        doThrow(new Error(expectedErrorMsg)).when(customerService_mock).getCustomer(customerId);
+        NullPointerException expectedException = podamFactory.manufacturePojo(NullPointerException.class);
+        doThrow(expectedException).when(customerService_mock).getCustomer(customerId);
 
         // WHEN the customer API endpoint is called
         String uri = String.format("/v1/customers/%s", customerId);
@@ -159,26 +158,10 @@ class CustomerControllerTest extends BaseTest {
         Error error = objectMapper.readValue(result.getResponse().getContentAsByteArray(), Error.class);
 
         // THEN a INTERNAL SERVER ERROR should be returned containing an error message.
-        assertEquals(expectedErrorMsg, error.getMessage());
+        assertEquals(expectedException.getMessage(), error.getMessage());
 
         // Verify dependency mocks
         verify(customerService_mock).getCustomer(customerId);
-    }
-
-    /**
-     * GIVEN a customer ID
-     * WHEN the customer ID is checked to see if it is valid
-     * THEN false should be returned if the customer ID is null
-     * AND false should be returned if the customer ID is a negative number
-     * AND true should be returned if the customer ID is a positive number
-     * <p>
-     * DEVELOPER NOTE: Notice the use of @ParameterizedTest and @CsvSource here. This will cause JUnit to call this
-     * method once for each of the (comma-delimited) strings in the given array.
-     */
-    @ParameterizedTest
-    @CsvSource({", false", "-999, false", "0, false", "1234, true"})
-    void isValidCustomerId(Integer customerId, boolean expected) {
-        assertEquals(expected, customerController_spy.isValidCustomerId(customerId));
     }
 
     // -----------------------------------------------------------------------------------------------------------------

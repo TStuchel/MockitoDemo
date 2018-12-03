@@ -58,6 +58,8 @@ class CustomerRepository {
         customer.setId(customerId);
         customer.setFullName("a fake name");
 
+        this.refreshCustomerLastReadTimestamp(customer);
+
         return customer;
     }
 

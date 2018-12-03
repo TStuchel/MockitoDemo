@@ -1,6 +1,7 @@
 package com.daugherty.demo.customers;
 
 import com.daugherty.demo.customers.entity.Customer;
+import com.daugherty.demo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,9 +63,27 @@ class CustomerService {
      * to the Repository, but this is a bad idea. It's best to respect the 3-layered nature of the application
      * architecture. Inevitably, you'll have to add some real business logic, and you'll need a place to put it.
      */
-    Customer getCustomer(Integer customerId) {
+    Customer getCustomer(Integer customerId) throws BusinessException {
+
+        // Business validation
+        if (!this.isValidCustomerId(customerId)) {
+            throw new BusinessException("Invalid customer ID [" + customerId + "]");
+        }
+
         return this.customerRepository.getCustomer(customerId);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    // ------------------------------------------------ PRIVATE METHODS ------------------------------------------------
+
+    /**
+     * Returns whether or not the given customer ID is valid.
+     */
+    boolean isValidCustomerId(Integer customerId) {
+        return customerId != null && customerId > 0;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
 }
