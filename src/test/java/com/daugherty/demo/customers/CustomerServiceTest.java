@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,7 +23,7 @@ class CustomerServiceTest extends BaseTest {
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
     @Mock
-    private CustomerRepository customerRepository_mock;
+    private CustomerRepository customerRepositoryMock;
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -33,20 +32,18 @@ class CustomerServiceTest extends BaseTest {
     /**
      * Class under test (spied to test protected methods)
      */
-    private CustomerService customerService_spy;
+    private CustomerService customerServiceSpy;
 
     // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
     @BeforeEach
-    void setUp() {
-
-        // Initialize Mockito mocked dependencies
-        MockitoAnnotations.initMocks(this);
+    public void setup() {
+        super.setup();
 
         // Create a spy so that protected methods can/may be mocked
-        customerService_spy = spy(new CustomerService(customerRepository_mock));
+        customerServiceSpy = spy(new CustomerService(customerRepositoryMock));
     }
 
     /**
@@ -62,10 +59,10 @@ class CustomerServiceTest extends BaseTest {
         Integer customerId = expectedCustomer.getId();
 
         // Mock dependencies
-        doReturn(expectedCustomer).when(customerRepository_mock).getCustomer(customerId);
+        doReturn(expectedCustomer).when(customerRepositoryMock).getCustomer(customerId);
 
         // WHEN the customer is requested
-        Customer actualCustomer = customerService_spy.getCustomer(customerId);
+        Customer actualCustomer = customerServiceSpy.getCustomer(customerId);
 
         //  THEN the Customer with the given ID should be returned.
         assertNotNull(actualCustomer);
@@ -73,7 +70,7 @@ class CustomerServiceTest extends BaseTest {
         assertEquals(expectedCustomer.getFullName(), actualCustomer.getFullName());
 
         // Verify dependency mocks
-        verify(customerRepository_mock).getCustomer(customerId);
+        verify(customerRepositoryMock).getCustomer(customerId);
     }
 
     /**
@@ -88,8 +85,8 @@ class CustomerServiceTest extends BaseTest {
      */
     @ParameterizedTest
     @CsvSource({", false", "-999, false", "0, false", "1234, true"})
-    void isValidCustomerId(Integer customerId, boolean expected) {
-        assertEquals(expected, customerService_spy.isValidCustomerId(customerId));
+    void validCustomerId(Integer customerId, boolean expected) {
+        assertEquals(expected, customerServiceSpy.isValidCustomerId(customerId));
     }
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -16,15 +16,16 @@ class RestExceptionHandlerTest extends BaseTest {
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
-    private RestExceptionHandler restExceptionHandler_spy;
+    private RestExceptionHandler restExceptionHandlerSpy;
 
     // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
     @BeforeEach
-    void setUp() {
-        restExceptionHandler_spy = spy(new RestExceptionHandler());
+    public void setup() {
+        super.setup();
+        restExceptionHandlerSpy = spy(new RestExceptionHandler());
     }
 
     /**
@@ -35,21 +36,22 @@ class RestExceptionHandlerTest extends BaseTest {
      * AND it should contain the error message text.
      */
     @Test
-    public void handlesBusinessException() {
+    void handlesBusinessException() {
 
         // WHEN a generic Exception is thrown
         BusinessException ex = podamFactory.manufacturePojo(BusinessException.class);
-        WebRequest webRequest_mock = mock(WebRequest.class);
-        ResponseEntity responseEntity = restExceptionHandler_spy.handleBusinessException(ex, webRequest_mock);
+        WebRequest webRequestMock = mock(WebRequest.class);
+        ResponseEntity<Object> responseEntity = restExceptionHandlerSpy.handleBusinessException(ex, webRequestMock);
+        Throwable actualException = (Throwable) responseEntity.getBody();
 
         // THEN a response should be returned
-        assertNotNull(responseEntity);
+        assertNotNull(actualException);
 
         // AND it should indicate an HTTP status code of 500 - Internal Server Error
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
         // AND it should contain the error message text.
-        assertEquals(ex.getMessage(), ((Error) responseEntity.getBody()).getMessage());
+        assertEquals(ex.getMessage(), actualException.getMessage());
     }
 
     /**
@@ -60,21 +62,22 @@ class RestExceptionHandlerTest extends BaseTest {
      * AND it should contain the error message text.
      */
     @Test
-    public void handlesGenericException() {
+    void handlesGenericException() {
 
         // WHEN a generic Exception is thrown
-        RuntimeException ex = podamFactory.manufacturePojo(NullPointerException.class);
-        WebRequest webRequest_mock = mock(WebRequest.class);
-        ResponseEntity responseEntity = restExceptionHandler_spy.handleGenericException(ex, webRequest_mock);
+        RuntimeException expectedException = podamFactory.manufacturePojo(NullPointerException.class);
+        WebRequest webRequestMock = mock(WebRequest.class);
+        ResponseEntity<Object> responseEntity = restExceptionHandlerSpy.handleGenericException(expectedException, webRequestMock);
+        Throwable actualException = (Throwable) responseEntity.getBody();
 
         // THEN a response should be returned
-        assertNotNull(responseEntity);
+        assertNotNull(actualException);
 
         // AND it should indicate an HTTP status code of 500 - Internal Server Error
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
 
         // AND it should contain the error message text.
-        assertEquals(ex.getMessage(), ((Error) responseEntity.getBody()).getMessage());
+        assertEquals(expectedException.getMessage(), actualException.getMessage());
     }
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 package com.daugherty.demo.customers;
 
 import com.daugherty.demo.customers.entity.Customer;
+import com.daugherty.demo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class CustomerController {
      * Spring creates it.
      */
     @Autowired
-    CustomerController(CustomerService customerService) {
+    CustomerController(final CustomerService customerService) {
         this.customerService = customerService;
     }
 
@@ -67,16 +68,16 @@ public class CustomerController {
      * DEVELOPER NOTE: This method is annotated such that any GET requests to the /v1/customers/{customerId} URL will be
      * fed into this method. Notice that is method returns ResponseEntity<?>. This is so the method can return more than
      * one type of object... in this case either a Customer or an Error.
-     * <p>
+     * </p>
      *
      * @see com.daugherty.demo.RestExceptionHandler
      */
     @GetMapping(path = "/v1/customers/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getCustomer(@PathVariable("customerId") Integer customerId) throws Exception {
+    public ResponseEntity<Customer> getCustomer(@PathVariable("customerId") final Integer customerId) throws BusinessException {
 
         // DEVELOPER NOTE: Keep in mind that every line of code might blow up with an Exception. It's good form
         // to let exceptions bubble up to the controller, where it can decide on what HTTP response to return.
-        Customer customer = customerService.getCustomer(customerId);
+        final Customer customer = customerService.getCustomer(customerId);
 
         // Return 200-OK and the Customer
         return ok().body(customer);

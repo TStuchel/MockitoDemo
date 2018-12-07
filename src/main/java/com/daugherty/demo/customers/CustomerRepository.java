@@ -33,9 +33,10 @@ class CustomerRepository {
     Customer getCustomer(Integer customerId) {
 
         // Read the customer from the database
-        Customer customer = this.readFromDatabase(customerId);
+        Customer customer = readFromDatabase(customerId);
 
-        // @TODO: Implement some post-read processing if necessary
+        // Post-read processing
+        refreshCustomerLastReadTimestamp(customer);
 
         // Done
         return customer;
@@ -58,8 +59,6 @@ class CustomerRepository {
         customer.setId(customerId);
         customer.setFullName("a fake name");
 
-        this.refreshCustomerLastReadTimestamp(customer);
-
         return customer;
     }
 
@@ -68,7 +67,7 @@ class CustomerRepository {
      * it is here to demonstrate the "change state" pattern of unit testing as well as how to test time-based methods.
      */
     void refreshCustomerLastReadTimestamp(Customer customer) {
-        customer.setLastReadTimestamp(this.now());
+        customer.setLastReadTimestamp(now());
     }
 
     /**

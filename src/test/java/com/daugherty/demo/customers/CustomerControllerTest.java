@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,6 +47,11 @@ class CustomerControllerTest extends BaseTest {
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
     /**
+     * The URI for retrieving a customer
+     */
+    private static final String V1_GET_CUSTOMER_URI = "/v1/customers/%s";
+
+    /**
      * Create a "mock" client that can call the SpringExtend-ed instance of SpringBoot.
      * DEVELOPER NOTE: We could have used the annotation @AutoConfigureMockMvc on this class and used @Autowired on this
      * field, but due to the preferred form of explicitly building and spying the tested CustomerController we want to
@@ -58,24 +62,22 @@ class CustomerControllerTest extends BaseTest {
     /**
      * Class under test (spied to test protected methods)
      */
-    private CustomerController customerController_spy;
+    private CustomerController customerControllerSpy;
 
     // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
     @BeforeEach
-    void setup() {
-
-        // Initialize Mockito mocked dependencies
-        MockitoAnnotations.initMocks(this);
+    public void setup() {
+        super.setup();
 
         // Create a spy so that protected methods can/may be mocked
-        customerController_spy = spy(new CustomerController(customerService_mock));
+        customerControllerSpy = spy(new CustomerController(customerService_mock));
 
         // Set up Mock MVC for HTTP calls. DEVELOPER NOTE: This makes Spring send requests to our spied controller,
         // instead of whatever controller component it would have created and wired up itself.
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController_spy).setControllerAdvice(new RestExceptionHandler()).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerControllerSpy).setControllerAdvice(new RestExceptionHandler()).build();
     }
 
     /**
@@ -94,8 +96,8 @@ class CustomerControllerTest extends BaseTest {
         doReturn(expectedCustomer).when(customerService_mock).getCustomer(customerId);
 
         // WHEN the customer API endpoint is called (this is both a GET call and an assertion that OK is returned)
-        String uri = String.format("/v1/customers/%s", customerId);
-        MvcResult result = this.mockMvc.perform(get(uri)).andExpect(status().isOk()).andReturn();
+        String uri = String.format(V1_GET_CUSTOMER_URI, customerId);
+        MvcResult result = mockMvc.perform(get(uri)).andExpect(status().isOk()).andReturn();
 
         // We have to deserialize because JSON was returned, not an object, proving it was a "real" REST call.
         Customer actualCustomer = objectMapper.readValue(result.getResponse().getContentAsByteArray(), Customer.class);
@@ -118,22 +120,22 @@ class CustomerControllerTest extends BaseTest {
     void getCustomer_businessException() throws Exception {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
-        Integer customerId = -RandomUtils.nextInt(0, 99999);
-        String message = "Invalid customer ID [" + customerId + "]";
+        Integer customerId = -RandomUtils.nextInt(0, 100);
+        String message = String.format(CustomerService.INVALID_CUSTOMER_ID, customerId);
 
         // Dependency Mocks
         doThrow(new BusinessException(message)).when(customerService_mock).getCustomer(customerId);
 
         // WHEN the customer API endpoint is called
-        String uri = String.format("/v1/customers/%s", customerId);
-        MvcResult result = this.mockMvc.perform(get(uri)).andExpect(status().isBadRequest()).andReturn();
+        String uri = String.format(V1_GET_CUSTOMER_URI, customerId);
+        MvcResult result = mockMvc.perform(get(uri)).andExpect(status().isBadRequest()).andReturn();
         Error error = objectMapper.readValue(result.getResponse().getContentAsByteArray(), Error.class);
 
         // THEN a BAD REQUEST should be returned containing an error message.
         assertEquals(message, error.getMessage());
 
         // Verify dependency mocks
-        verify(customerController_spy).getCustomer(customerId);
+        verify(customerControllerSpy).getCustomer(customerId);
     }
 
     /**
@@ -153,8 +155,8 @@ class CustomerControllerTest extends BaseTest {
         doThrow(expectedException).when(customerService_mock).getCustomer(customerId);
 
         // WHEN the customer API endpoint is called
-        String uri = String.format("/v1/customers/%s", customerId);
-        MvcResult result = this.mockMvc.perform(get(uri)).andExpect(status().isInternalServerError()).andReturn();
+        String uri = String.format(V1_GET_CUSTOMER_URI, customerId);
+        MvcResult result = mockMvc.perform(get(uri)).andExpect(status().isInternalServerError()).andReturn();
         Error error = objectMapper.readValue(result.getResponse().getContentAsByteArray(), Error.class);
 
         // THEN a INTERNAL SERVER ERROR should be returned containing an error message.

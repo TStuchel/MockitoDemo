@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * conditions. It's bad form to just return 200 for "good" and 500 for "bad". There's a rich collection of choices to
  * return specific HTTP responses depending on the result of the call.
  *
- * @see <a href="https://www.restapitutorial.com/httpstatuscodes.html>https://www.restapitutorial.com/httpstatuscodes.html</a>
+ * @see <a href="https://www.restapitutorial.com/httpstatuscodes.html">https://www.restapitutorial.com/httpstatuscodes.html</a>
  */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -25,8 +25,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * Handles any BusinessExceptions that are thrown by controllers and returns a 400 - BAD REQUEST
      */
-    @ExceptionHandler(value = BusinessException.class)
-    public ResponseEntity handleBusinessException(BusinessException ex, WebRequest webRequest) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest webRequest) {
         return handleExceptionInternal(ex, new Error(ex.getMessage(), ex), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
     }
 
@@ -34,7 +34,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * Catch-all that handles any non-specific RuntimeException that are thrown by controllers and returns a 500 -
      * INTERNAL SERVER ERROR
      */
-    @ExceptionHandler(value = RuntimeException.class)
+    @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<Object> handleGenericException(RuntimeException ex, WebRequest webRequest) {
         return handleExceptionInternal(ex, new Error(ex.getMessage(), ex), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
     }
