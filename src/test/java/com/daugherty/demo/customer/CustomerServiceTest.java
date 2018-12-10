@@ -1,7 +1,7 @@
-package com.daugherty.demo.customers;
+package com.daugherty.demo.customer;
 
 import com.daugherty.demo.BaseTest;
-import com.daugherty.demo.customers.entity.Customer;
+import com.daugherty.demo.customer.entity.Customer;
 import com.daugherty.demo.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

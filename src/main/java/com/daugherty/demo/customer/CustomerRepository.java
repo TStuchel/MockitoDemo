@@ -1,6 +1,6 @@
-package com.daugherty.demo.customers;
+package com.daugherty.demo.customer;
 
-import com.daugherty.demo.customers.entity.Customer;
+import com.daugherty.demo.customer.entity.Customer;
 import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;

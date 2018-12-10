@@ -1,6 +1,7 @@
 package com.daugherty.demo;
 
 import com.daugherty.demo.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * @see <a href="https://www.restapitutorial.com/httpstatuscodes.html">https://www.restapitutorial.com/httpstatuscodes.html</a>
  */
 @ControllerAdvice
+@Slf4j
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
@@ -27,6 +29,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest webRequest) {
+        log.warn(ex.getMessage(), ex);
         return handleExceptionInternal(ex, new Error(ex.getMessage(), ex), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
     }
 
@@ -36,6 +39,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<Object> handleGenericException(RuntimeException ex, WebRequest webRequest) {
+        log.error(ex.getMessage(), ex);
         return handleExceptionInternal(ex, new Error(ex.getMessage(), ex), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
     }
 

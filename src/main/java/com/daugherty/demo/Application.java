@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * by calling either their @Autowired annotated constructor or directly injecting the instances into their @Autowired
  * properties.
  *
- * @see com.daugherty.demo.customers.CustomerController next!
+ * @see com.daugherty.demo.customer.CustomerController next!
  */
 @SpringBootApplication
 public class Application {

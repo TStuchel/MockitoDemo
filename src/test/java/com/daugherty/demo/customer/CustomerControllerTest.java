@@ -1,9 +1,10 @@
-package com.daugherty.demo.customers;
+package com.daugherty.demo.customer;
 
 import com.daugherty.demo.Application;
 import com.daugherty.demo.BaseTest;
 import com.daugherty.demo.RestExceptionHandler;
-import com.daugherty.demo.customers.entity.Customer;
+import com.daugherty.demo.customer.contract.CustomerDTO;
+import com.daugherty.demo.customer.entity.Customer;
 import com.daugherty.demo.exception.BusinessException;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,9 @@ class CustomerControllerTest extends BaseTest {
     @Mock
     private CustomerService customerService_mock;
 
+    @Mock
+    private CustomerTranslator customerTranslator_mock;
+
     // -----------------------------------------------------------------------------------------------------------------
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
@@ -73,7 +77,7 @@ class CustomerControllerTest extends BaseTest {
         super.setup();
 
         // Create a spy so that protected methods can/may be mocked
-        customerControllerSpy = spy(new CustomerController(customerService_mock));
+        customerControllerSpy = spy(new CustomerController(customerTranslator_mock, customerService_mock));
 
         // Set up Mock MVC for HTTP calls. DEVELOPER NOTE: This makes Spring send requests to our spied controller,
         // instead of whatever controller component it would have created and wired up itself.
@@ -89,26 +93,29 @@ class CustomerControllerTest extends BaseTest {
     void getCustomer_success() throws Exception {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
-        Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
-        Integer customerId = expectedCustomer.getId();
+        CustomerDTO expectedCustomerDto = podamFactory.manufacturePojo(CustomerDTO.class);
+        Integer customerId = expectedCustomerDto.getId();
 
         // Dependency Mocks (note that is mock only exists in the spied controller that was initialized with MockMvc)
-        doReturn(expectedCustomer).when(customerService_mock).getCustomer(customerId);
+        Customer customer = podamFactory.manufacturePojo(Customer.class);
+        doReturn(customer).when(customerService_mock).getCustomer(customerId);
+        doReturn(expectedCustomerDto).when(customerTranslator_mock).toContract(customer);
 
         // WHEN the customer API endpoint is called (this is both a GET call and an assertion that OK is returned)
         String uri = String.format(V1_GET_CUSTOMER_URI, customerId);
         MvcResult result = mockMvc.perform(get(uri)).andExpect(status().isOk()).andReturn();
 
         // We have to deserialize because JSON was returned, not an object, proving it was a "real" REST call.
-        Customer actualCustomer = objectMapper.readValue(result.getResponse().getContentAsByteArray(), Customer.class);
+        CustomerDTO actualCustomerDto = objectMapper.readValue(result.getResponse().getContentAsByteArray(), CustomerDTO.class);
 
         // THEN the Customer with the given ID should be returned.
-        assertEquals(expectedCustomer.getId(), actualCustomer.getId());
-        assertEquals(expectedCustomer.getFullName(), actualCustomer.getFullName());
-        assertTrue(expectedCustomer.getLastReadTimestamp().isEqual(actualCustomer.getLastReadTimestamp()));
+        assertEquals(expectedCustomerDto.getId(), actualCustomerDto.getId());
+        assertEquals(expectedCustomerDto.getFullName(), actualCustomerDto.getFullName());
+        assertTrue(expectedCustomerDto.getLastReadTimestamp().isEqual(actualCustomerDto.getLastReadTimestamp()));
 
         // Verify dependency mocks
-        verify(customerService_mock, times(1)).getCustomer(customerId);
+        verify(customerService_mock).getCustomer(customerId);
+        verify(customerTranslator_mock).toContract(customer);
     }
 
     /**

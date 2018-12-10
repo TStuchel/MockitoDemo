@@ -1,6 +1,6 @@
-package com.daugherty.demo.customers;
+package com.daugherty.demo.customer;
 
-import com.daugherty.demo.customers.entity.Customer;
+import com.daugherty.demo.customer.entity.Customer;
 import com.daugherty.demo.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
  * anything about databases, external web services, file systems, or any other technicalities of shuttling data
  * around the system. That's the job of the final layer.
  *
- * @see com.daugherty.demo.customers.CustomerRepository
+ * @see com.daugherty.demo.customer.CustomerRepository
  */
 @Service
 class CustomerService {
@@ -33,7 +33,7 @@ class CustomerService {
      * DEVELOPER NOTE: This class is dependent on the existence of a CustomerRepository object... which will created and
      * injected by Spring prior to this object's construction.
      *
-     * @see com.daugherty.demo.customers.CustomerRepository
+     * @see com.daugherty.demo.customer.CustomerRepository
      */
     private final CustomerRepository customerRepository;
 

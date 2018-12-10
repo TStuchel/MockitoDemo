@@ -1,4 +1,4 @@
-package com.daugherty.demo.customers.entity;
+package com.daugherty.demo.customer.contract;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,13 +7,14 @@ import lombok.Data;
 import java.time.ZonedDateTime;
 
 /**
- * DEVELOPER NOTE: This customer class is actually a "Data Transfer Object" or "DTO". It is the Java implementation of
- * the JSON contract sent to this web service. It is JSON that defines the contract, not this class. This class is just
- * the "Java interpretation" of the contract. DTO contract classes should not have any business logic in them at all
- * except for perhaps light contract-centric validations.
+ * DEVELOPER NOTE: This customer class is a "Data Transfer Object" or "DTO". It is the Java
+ * implementation of the JSON contract sent to this web service. It is JSON that defines the
+ * contract, not this class. This class is just the "Java interpretation" of the contract. DTO
+ * contract classes should not have any business logic in them at all except for perhaps light
+ * contract-centric validations.
  */
 @Data
-public class Customer {
+public class CustomerDTO {
 
     // DEVELOPER NOTE: Properties of a DTO contract should always be an object type, not a primitive (except String,
     // it's  a special case). This allows fields to be absent from JSON during de-serialization and allow for fields
@@ -35,4 +36,5 @@ public class Customer {
     @JsonProperty("lastReadTimestamp")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private ZonedDateTime lastReadTimestamp;
+
 }

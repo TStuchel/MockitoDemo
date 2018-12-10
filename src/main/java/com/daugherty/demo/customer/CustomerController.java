@@ -1,6 +1,7 @@
-package com.daugherty.demo.customers;
+package com.daugherty.demo.customer;
 
-import com.daugherty.demo.customers.entity.Customer;
+import com.daugherty.demo.customer.contract.CustomerDTO;
+import com.daugherty.demo.customer.entity.Customer;
 import com.daugherty.demo.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,7 +21,7 @@ import static org.springframework.http.ResponseEntity.ok;
  * The @RestController annotation tells Spring that this class is a "controller" that can handle incoming HTTP
  * requests.
  *
- * @see com.daugherty.demo.customers.CustomerService next!
+ * @see com.daugherty.demo.customer.CustomerService next!
  */
 @RestController
 public class CustomerController {
@@ -28,11 +29,12 @@ public class CustomerController {
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
     /**
-     * DEVELOPER NOTE: This class has a dependency (requires... needs it to work... can't live without it) a class from
+     * DEVELOPER NOTE: This class has dependencies (requires... needs it to work... can't live without it) with classes from
      * the next "service" layer of the application called "CustomerService". It's pretty common to have a suffixed
      * naming convention for classes in each layer. Note that this variable is both private and "final". Once the
      * variable is set (in the constructor), it will never be changed again.
      */
+    private final CustomerTranslator customerTranslator;
     private final CustomerService customerService;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -54,7 +56,8 @@ public class CustomerController {
      * Spring creates it.
      */
     @Autowired
-    CustomerController(final CustomerService customerService) {
+    CustomerController(CustomerTranslator customerTranslator, CustomerService customerService) {
+        this.customerTranslator = customerTranslator;
         this.customerService = customerService;
     }
 
@@ -65,7 +68,7 @@ public class CustomerController {
     /**
      * Given a customer ID, return a Customer with the given ID.
      * <p>
-     * DEVELOPER NOTE: This method is annotated such that any GET requests to the /v1/customers/{customerId} URL will be
+     * DEVELOPER NOTE: This method is annotated such that any GET requests to the /v1/customer/{customerId} URL will be
      * fed into this method. Notice that is method returns ResponseEntity<?>. This is so the method can return more than
      * one type of object... in this case either a Customer or an Error.
      * </p>
@@ -73,14 +76,17 @@ public class CustomerController {
      * @see com.daugherty.demo.RestExceptionHandler
      */
     @GetMapping(path = "/v1/customers/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Customer> getCustomer(@PathVariable("customerId") final Integer customerId) throws BusinessException {
+    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable("customerId") final Integer customerId) throws BusinessException {
 
         // DEVELOPER NOTE: Keep in mind that every line of code might blow up with an Exception. It's good form
         // to let exceptions bubble up to the controller, where it can decide on what HTTP response to return.
         final Customer customer = customerService.getCustomer(customerId);
 
+        // Translate to contract
+        CustomerDTO customerDto = customerTranslator.toContract(customer);
+
         // Return 200-OK and the Customer
-        return ok().body(customer);
+        return ok().body(customerDto);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
