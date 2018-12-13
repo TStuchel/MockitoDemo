@@ -9,20 +9,23 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
 /**
  * DEVELOPER NOTE:  Note that we don't need Spring... nothing in this test, or the tested class, cares about Spring.
  * This is all basic Mockito and JUnit. Don't involve Spring unless you have to; it just slows down your tests.
+ * <p>
+ * Comments have been added to this class to indicate the order that JUnit and Mockito execute this class.
  */
-class CustomerServiceTest extends BaseTest {
+class CustomerServiceTest extends BaseTest { // <-- (1) JUnit instantiates a new instance of this class for each @Test
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
-    @Mock
+    @Mock // <-- (4) Mockito sees this annotation and will create a Mock instance of this class
     private CustomerRepository customerRepositoryMock;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -38,9 +41,9 @@ class CustomerServiceTest extends BaseTest {
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
-    @BeforeEach
+    @BeforeEach // (2) <-- JUnit calls the @BeforeEach method
     public void setup() {
-        super.setup();
+        super.setup(); // <-- (3) This line is executed to have Mockito scan this class for Mockito annotations
 
         // Create a spy so that protected methods can/may be mocked
         customerServiceSpy = spy(new CustomerService(customerRepositoryMock));
@@ -52,25 +55,51 @@ class CustomerServiceTest extends BaseTest {
      * THEN the Customer with the given ID should be returned.
      */
     @Test
-    void getCustomer() throws BusinessException {
+    // <-- (5) JUnit calls this test method
+    void getCustomer_found() throws BusinessException {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
         Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
         Integer customerId = expectedCustomer.getId();
 
         // Mock dependencies
-        doReturn(expectedCustomer).when(customerRepositoryMock).getCustomer(customerId);
+        doReturn(Optional.of(expectedCustomer)).when(customerRepositoryMock).findById(customerId);
 
         // WHEN the customer is requested
         Customer actualCustomer = customerServiceSpy.getCustomer(customerId);
 
-        //  THEN the Customer with the given ID should be returned.
+        // THEN the Customer with the given ID should be returned.
         assertNotNull(actualCustomer);
         assertEquals(expectedCustomer.getId(), actualCustomer.getId());
         assertEquals(expectedCustomer.getFullName(), actualCustomer.getFullName());
 
         // Verify dependency mocks
-        verify(customerRepositoryMock).getCustomer(customerId);
+        verify(customerRepositoryMock).findById(customerId);
+    }
+
+    /**
+     * GIVEN a customer ID
+     * WHEN the customer is requested, but the customer is NOT in the system
+     * THEN null should be returned.
+     */
+    @Test
+    void getCustomer_notFound() throws BusinessException {
+
+        // GIVEN a customer ID
+        Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
+        Integer customerId = podamFactory.manufacturePojo(Integer.class);
+
+        // Mock dependencies
+        doReturn(Optional.empty()).when(customerRepositoryMock).findById(customerId);
+
+        // WHEN the customer is requested, but the customer is NOT in the system
+        Customer actualCustomer = customerServiceSpy.getCustomer(customerId);
+
+        // THEN null should be returned.
+        assertNull(actualCustomer);
+
+        // Verify dependency mocks
+        verify(customerRepositoryMock).findById(customerId);
     }
 
     /**
