@@ -11,7 +11,8 @@ import org.mockito.Mock;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 
@@ -60,7 +61,7 @@ class CustomerServiceTest extends BaseTest { // <-- (1) JUnit instantiates a new
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
         Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
-        Integer customerId = expectedCustomer.getId();
+        Integer customerId = expectedCustomer.getCustomerId();
 
         // Mock dependencies
         doReturn(Optional.of(expectedCustomer)).when(customerRepositoryMock).findById(customerId);
@@ -69,9 +70,7 @@ class CustomerServiceTest extends BaseTest { // <-- (1) JUnit instantiates a new
         Customer actualCustomer = customerServiceSpy.getCustomer(customerId);
 
         // THEN the Customer with the given ID should be returned.
-        assertNotNull(actualCustomer);
-        assertEquals(expectedCustomer.getId(), actualCustomer.getId());
-        assertEquals(expectedCustomer.getFullName(), actualCustomer.getFullName());
+        assertEquals(expectedCustomer, actualCustomer);
 
         // Verify dependency mocks
         verify(customerRepositoryMock).findById(customerId);
@@ -86,7 +85,6 @@ class CustomerServiceTest extends BaseTest { // <-- (1) JUnit instantiates a new
     void getCustomer_notFound() throws BusinessException {
 
         // GIVEN a customer ID
-        Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
         Integer customerId = podamFactory.manufacturePojo(Integer.class);
 
         // Mock dependencies

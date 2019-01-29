@@ -53,7 +53,7 @@ public class CustomerTranslatorTest extends BaseTest {
 
         // AND all fields of the CustomerDTO should be correctly mapped.
         assertNull(customer.getFullName());
-        assertNull(customer.getId());
+        assertNull(customer.getCustomerId());
         assertNull(customer.getLastReadTimestamp());
         assertEquals(customer.getStreetAddress(), "Unknown");
     }
@@ -80,7 +80,7 @@ public class CustomerTranslatorTest extends BaseTest {
 
         // AND all fields of the CustomerDTO should be correctly mapped.
         assertEquals(customerDto.getFullName(), customer.getFullName());
-        assertEquals(customerDto.getId(), customer.getId());
+        assertEquals(customerDto.getId(), customer.getCustomerId());
         assertEquals(customerDto.getLastReadTimestamp(), customer.getLastReadTimestamp());
         assertEquals(customer.getStreetAddress(), "Unknown");
 
@@ -135,7 +135,7 @@ public class CustomerTranslatorTest extends BaseTest {
 
         // AND all fields of the CustomerDTO should be correctly mapped.
         assertEquals(customer.getFullName(), customerDto.getFullName());
-        assertEquals(customer.getId(), customerDto.getId());
+        assertEquals(customer.getCustomerId(), customerDto.getId());
         assertEquals(customer.getLastReadTimestamp(), customerDto.getLastReadTimestamp());
     }
 

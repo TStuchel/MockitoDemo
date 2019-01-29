@@ -29,8 +29,8 @@ public class CustomerController {
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
     /**
-     * DEVELOPER NOTE: This class has dependencies (requires... needs it to work... can't live without it) with classes from
-     * the next "service" layer of the application called "CustomerService". It's pretty common to have a suffixed
+     * DEVELOPER NOTE: This class has dependencies (requires... needs it to work... can't live without it) with classes
+     * from  the next "service" layer of the application called "CustomerService". It's pretty common to have a suffixed
      * naming convention for classes in each layer. Note that this variable is both private and "final". Once the
      * variable is set (in the constructor), it will never be changed again.
      */
@@ -76,11 +76,11 @@ public class CustomerController {
      * @see com.daugherty.demo.RestExceptionHandler
      */
     @GetMapping(path = "/v1/customers/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable("customerId") final Integer customerId) throws BusinessException {
+    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable("customerId") Integer customerId) throws BusinessException {
 
         // DEVELOPER NOTE: Keep in mind that every line of code might blow up with an Exception. It's good form
         // to let exceptions bubble up to the controller, where it can decide on what HTTP response to return.
-        final Customer customer = customerService.getCustomer(customerId);
+        Customer customer = customerService.getCustomer(customerId);
 
         // Translate to contract
         CustomerDTO customerDto = customerTranslator.toContract(customer);

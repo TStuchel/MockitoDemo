@@ -5,16 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * DEVELOPER NOTE: This customer class is a "Data Transfer Object" or "DTO". It is the Java
- * implementation of the JSON contract sent to this web service. It is JSON that defines the
- * contract, not this class. This class is just the "Java interpretation" of the contract. DTO
- * contract classes should not have any business logic in them at all except for perhaps light
- * contract-centric validations.
+ * DEVELOPER NOTE: This customer class is a "Data Transfer Object" or "DTO". It is the Java implementation of the JSON
+ * contract sent to this web service. It is JSON that defines the contract, not this class. This class is just the
+ * "Java interpretation" of the contract. DTO contract classes should not have any business logic in them at all except
+ * for perhaps light contract-centric validations.
  */
 @Data
 public class CustomerDTO {
+
+    // -------------------------------------------------- PROPERTIES ---------------------------------------------------
 
     // DEVELOPER NOTE: Properties of a DTO contract should always be an object type, not a primitive (except String,
     // it's  a special case). This allows fields to be absent from JSON during de-serialization and allow for fields
@@ -36,5 +39,31 @@ public class CustomerDTO {
     @JsonProperty("lastReadTimestamp")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private ZonedDateTime lastReadTimestamp;
+
+    // DEVELOPER NOTE: If there is no "orderNumbers" property in the JSON, then this List will be 'null'. See below.
+    @JsonProperty("orderNumbers")
+    private List<String> orderNumbers;
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    // ----------------------------------------------- PROPERTY METHODS ------------------------------------------------
+
+    /**
+     * Return list of order numbers associated with this customer.
+     * <p>
+     * DEVELOPER NOTE: The @Data annotation is a Lombok library annotation that would automatically create this method
+     * behind the scenes. However, since it is implemented here, Lombok will not create a getOrderNumbers() method and
+     * will leave this one as the implementation to use. This method ensures that it's impossible for getOrderNumbers()
+     * to return a null, thus the developer doesn't have to worry about null checks when using this List property in
+     * case the JSON didn't have the orderNumbers property.
+     */
+    public List<String> getOrderNumbers() {
+        if (orderNumbers == null) {
+            orderNumbers = new ArrayList<>();
+        }
+        return orderNumbers;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
 }

@@ -155,7 +155,7 @@ class CustomerControllerTest extends BaseTest {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
         Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
-        Integer customerId = expectedCustomer.getId();
+        Integer customerId = expectedCustomer.getCustomerId();
 
         // Dependency Mocks
         NullPointerException expectedException = podamFactory.manufacturePojo(NullPointerException.class);

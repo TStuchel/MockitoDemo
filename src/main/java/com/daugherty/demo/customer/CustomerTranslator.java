@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
  * <p>
  * DEVELOPER NOTE: This layer of abstraction may seem like overkill. However, if you tie your business logic to web
  * service contract classes, then it becomes increasingly difficult to version your web service endpoints. Having
- * a separate endity class, even if it's nearly identical to the contract class, allows for an evolving layer of business
+ * a separate endity class, even if it's nearly identical to the contract class, allows for an evolving layer of
+ * business
  * logic while at the same time remaining backward compatible with any API versioning that is necessary. Also, having
  * proper business entity classes allows for implementing the "tell, don't ask" design principle.
  */
@@ -25,7 +26,7 @@ public class CustomerTranslator {
 
         Customer customer = new Customer();
         customer.setFullName(customerDto.getFullName());
-        customer.setId(customerDto.getId());
+        customer.setCustomerId(customerDto.getId());
         customer.setLastReadTimestamp(customerDto.getLastReadTimestamp());
         customer.setStreetAddress("Unknown");
         return customer;
@@ -38,7 +39,7 @@ public class CustomerTranslator {
 
         CustomerDTO customerDto = new CustomerDTO();
         customerDto.setFullName(customer.getFullName());
-        customerDto.setId(customer.getId());
+        customerDto.setId(customer.getCustomerId());
         customerDto.setLastReadTimestamp(customer.getLastReadTimestamp());
         return customerDto;
     }
