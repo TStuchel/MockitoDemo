@@ -12,6 +12,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * or any similar annotation and create a single instance of those classes. Then it wires all of those objects together
  * by calling either their @Autowired annotated constructor or directly injecting the instances into their @Autowired
  * properties.
+ * <p>
+ * You can run this file directly, which will start up Spring for real. If you do, you can hit the following endpoint
+ * in Postman or your browser... and get a 404 not found, since there aren't *really* any customers...
+ * <p>
+ * http://localhost:8080/v1/customers/1
+ * <p>
  *
  * @see com.daugherty.demo.customer.CustomerController next!
  */

@@ -33,10 +33,14 @@ dependencies {
     compile group: 'org.springframework.data', name: 'spring-data-jpa'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.3.7.Final'
 
+    // DEVELOPER NOTE: Normally, we would only use H2 as a testCompile dependency. But this demo app doesn't have a 
+    // "real" database server anywhere to talk to, so we have to use H2 as this apps own private in-memory, throw-away
+    // database.
+    compile group: 'com.h2database', name: 'h2', version: '1.4.197'
+
     testCompile group: 'org.springframework', name: 'spring-test'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-test-autoconfigure'
     testCompile group: 'org.mockito', name: 'mockito-core'
     testCompile group: 'uk.co.jemos.podam', name: 'podam', version: '7.2.0.RELEASE'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params'
-    testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
 }

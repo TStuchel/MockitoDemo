@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -82,6 +83,10 @@ public class CustomerController {
         // to let exceptions bubble up to the controller, where it can decide on what HTTP response to return.
         Customer customer = customerService.getCustomer(customerId);
 
+        // Customer not found?
+        if (customer == null) {
+            return notFound().build();
+        }
         // Translate to contract
         CustomerDTO customerDto = customerTranslator.toContract(customer);
 
@@ -90,5 +95,4 @@ public class CustomerController {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
 }

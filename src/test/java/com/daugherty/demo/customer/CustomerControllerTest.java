@@ -173,5 +173,30 @@ class CustomerControllerTest extends BaseTest {
         verify(customerService_mock).getCustomer(customerId);
     }
 
+    /**
+     * GIVEN a valid customer ID and a customer with that ID is not in the system
+     * WHEN the GET customer API endpoint is called
+     * THEN a NOT FOUND status should be returned.
+     */
+    @Test
+    void getCustomer_notFound() throws Exception {
+
+        // GIVEN a valid customer ID and a customer with that ID is in the system
+        Customer expectedCustomer = podamFactory.manufacturePojo(Customer.class);
+        Integer customerId = expectedCustomer.getCustomerId();
+
+        // Dependency Mocks
+        NullPointerException expectedException = podamFactory.manufacturePojo(NullPointerException.class);
+        doReturn(null).when(customerService_mock).getCustomer(customerId);
+
+        // WHEN the customer API endpoint is called
+        // THEN a NOT FOUND status should be returned.
+        String uri = String.format(V1_GET_CUSTOMER_URI, customerId);
+        mockMvc.perform(get(uri)).andExpect(status().isNotFound()).andReturn();
+
+        // Verify dependency mocks
+        verify(customerService_mock).getCustomer(customerId);
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 }
