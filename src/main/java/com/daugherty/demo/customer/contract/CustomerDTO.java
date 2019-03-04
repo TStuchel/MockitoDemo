@@ -37,7 +37,7 @@ public class CustomerDTO {
     // any ObjectMapper that might serialize/deserialize this class. This lets ObjectMapper know how to serialize and
     // deserialize ZonedDateTime.
     @JsonProperty("lastReadTimestamp")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ")
     private ZonedDateTime lastReadTimestamp;
 
     // DEVELOPER NOTE: If there is no "orderNumbers" property in the JSON, then this List will be 'null'. See below.

@@ -22,17 +22,19 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
 
 dependencies {
+    annotationProcessor "org.projectlombok:lombok:1.18.4"
+
     compile group: 'org.projectlombok', name: 'lombok'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
     compile group: 'javax.persistence', name: 'javax.persistence-api'
     compile group: 'org.springframework.data', name: 'spring-data-jpa'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.3.7.Final'
-
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    
     // DEVELOPER NOTE: Normally, we would only use H2 as a testCompile dependency. But this demo app doesn't have a 
     // "real" database server anywhere to talk to, so we have to use H2 as this apps own private in-memory, throw-away
     // database.
