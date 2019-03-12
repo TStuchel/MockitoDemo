@@ -53,12 +53,12 @@ public abstract class BaseTest {
         // Root
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         root.addAppender(appender);
-        root.setLevel(Level.DEBUG);
+        root.setLevel(Level.INFO);
 
         // Podam
         Logger podam = (Logger) LoggerFactory.getLogger("uk.co.jemos.podam");
         podam.addAppender(appender);
-        podam.setLevel(Level.INFO);
+        podam.setLevel(Level.ERROR);
         podam.setAdditive(true);
     }
 

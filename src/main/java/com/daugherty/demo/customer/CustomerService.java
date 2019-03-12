@@ -2,7 +2,6 @@ package com.daugherty.demo.customer;
 
 import com.daugherty.demo.customer.entity.Customer;
 import com.daugherty.demo.exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -48,7 +47,6 @@ class CustomerService {
 
     // ------------------------------------------------- CONSTRUCTORS --------------------------------------------------
 
-    @Autowired
     CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }

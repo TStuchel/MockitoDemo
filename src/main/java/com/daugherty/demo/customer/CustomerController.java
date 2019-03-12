@@ -3,7 +3,6 @@ package com.daugherty.demo.customer;
 import com.daugherty.demo.customer.contract.CustomerDTO;
 import com.daugherty.demo.customer.entity.Customer;
 import com.daugherty.demo.exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,16 +46,14 @@ public class CustomerController {
      *
      * @see com.daugherty.demo.Application
      * <p>
-     * ... Spring searched the classpath to find all of the annotated classes. Since this constructor has @Autowired on
-     * it, Spring knows it can't create an instance of this class until it first creates an instance of the
-     * CustomerService. Doing dependency injection this way ends up being better than "field injection" where the
-     * annotation @Autowired would be on the customerService member vairable. There are quite a few real and stylistic
-     * reasons for this, but it's best to get used to this form intead of autowiring member variables. Dependency
-     * injection this way forces Spring to build classes in a true dependency-heirarchical order. Field injection lets
-     * Spring build objects in any order, and this can result in weird behavior if you try to access a dependency before
-     * Spring creates it.
+     * ... Spring searched the classpath to find all of the annotated classes. Spring knows it can't create an instance
+     * of this class until it first creates an instance of the CustomerService. Doing dependency injection this way ends
+     * up being better than "field injection" where the annotation @Autowired would be on the customerService member
+     * variable. There are quite a few real and stylistic reasons for this, but it's best to get used to this form
+     * intead of autowiring member variables. Dependency injection this way forces Spring to build classes in a true
+     * dependency-heirarchical order. Field injection lets Spring build objects in any order, and this can result in
+     * weird behavior if you try to access a dependency before Spring creates it.
      */
-    @Autowired
     CustomerController(CustomerTranslator customerTranslator, CustomerService customerService) {
         this.customerTranslator = customerTranslator;
         this.customerService = customerService;

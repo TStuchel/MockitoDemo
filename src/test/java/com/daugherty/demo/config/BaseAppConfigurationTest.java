@@ -1,5 +1,7 @@
 package com.daugherty.demo.config;
 
+import com.daugherty.demo.BaseTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
@@ -27,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = AppConfiguration.class, initializers = ConfigFileApplicationContextInitializer.class)
-public abstract class BaseAppConfigurationTest {
+public abstract class BaseAppConfigurationTest extends BaseTest {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
@@ -41,6 +43,11 @@ public abstract class BaseAppConfigurationTest {
     // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+    }
 
     /**
      * GIVEN the application configuration file has values for all properties
