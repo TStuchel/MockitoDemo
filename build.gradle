@@ -23,8 +23,8 @@ targetCompatibility = 1.8
 
 dependencies {
     annotationProcessor "org.projectlombok:lombok:1.18.4"
-
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.4'
+    
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     compile group: 'javax.persistence', name: 'javax.persistence-api'
     compile group: 'org.springframework.data', name: 'spring-data-jpa'
@@ -45,7 +45,6 @@ dependencies {
     testCompile group: 'uk.co.jemos.podam', name: 'podam', version: '7.2.0.RELEASE'
 }
 
-// Use if source/target set to 1.11
-// test {
-//     useJUnitPlatform()
-// }
+test {
+    useJUnitPlatform()
+}
