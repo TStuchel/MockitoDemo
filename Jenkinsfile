@@ -1,12 +1,20 @@
 pipeline {
   agent any
   stages {
-    stage('Gradle Build') {
-      if (isUnix()) {
-        sh './gradlew clean build'
-      } else {
-        bat 'gradlew.bat clean build'
+    stage('Build') {
+      steps {
+         sh './gradlew clean build'
       }
     }
+    stage('Test') {
+      steps {
+        sh './gradlew check'
+      }
+    }
+  }
+  post {
+    always {
+      junit 'build/reports/**/*.xml'
+    }      
   }
 }
