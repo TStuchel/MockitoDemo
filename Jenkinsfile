@@ -1,9 +1,11 @@
 pipeline {
   agent any
   stages {
-    stage('Build') {
-      steps {
-        git(url: 'https://github.com/TStuchel/MockitoDemo', branch: 'master')
+    stage('Gradle Build') {
+      if (isUnix()) {
+        sh './gradlew clean build'
+      } else {
+        bat 'gradlew.bat clean build'
       }
     }
   }
