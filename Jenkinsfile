@@ -27,7 +27,7 @@ pipeline {
                 stage('SonarQube') {
                     steps {
                         withSonarQubeEnv('SonarQube') {
-                            sh 'gradle sonarqube'
+                            sh 'gradle --info sonarqube'
                         }
                     }
                 }
