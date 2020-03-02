@@ -62,7 +62,6 @@ public class Customer {
     @Transient
     private ZonedDateTime lastReadTimestamp;
 
-    // -----------------------------------------------------------------------------------------------------------------
 }
 
 

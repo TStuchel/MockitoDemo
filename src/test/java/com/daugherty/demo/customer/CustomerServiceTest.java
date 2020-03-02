@@ -5,15 +5,20 @@ import com.daugherty.demo.customer.entity.Customer;
 import com.daugherty.demo.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 
 /**
@@ -22,41 +27,37 @@ import static org.mockito.Mockito.*;
  * <p>
  * Comments have been added to this class to indicate the order that JUnit and Mockito execute this class.
  */
-class CustomerServiceTest extends BaseTest { // <-- (1) JUnit instantiates a new instance of this class for each @Test
+@ExtendWith(MockitoExtension.class) // <-- (1) JUnit will run all unit tests wrapped such that Mockito can inject mocks.
+class CustomerServiceTest extends BaseTest { // <-- (2) JUnit instantiates a new instance of this class for each @Test
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
 
-    @Mock // <-- (4) Mockito sees this annotation and will create a Mock instance of this class
+    @Mock // <-- (3) Mockito sees this annotation and will create a Mock instance of this class
     private CustomerRepository customerRepositoryMock;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
     /**
      * Class under test (spied to test protected methods)
      */
+    @Spy // <-- (5) Mockito sees this annotation and will create a Spy instance of this class
+    @InjectMocks // <-- (4) Mockito will inject any mocks into this class's constructor when it is created.
     private CustomerService customerServiceSpy;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
-    @BeforeEach // (2) <-- JUnit calls the @BeforeEach method
-    public void setup() {
-        super.setup(); // <-- (3) This line is executed to have Mockito scan this class for Mockito annotations
-
-        // Create a spy so that protected methods can/may be mocked
-        customerServiceSpy = spy(new CustomerService(customerRepositoryMock));
+    @BeforeEach // (6) <-- JUnit calls the @BeforeEach method
+    public void beforeEach() {
+        super.setup();
     }
 
     /**
-     * GIVEN a valid customer ID and a customer with that ID is in the system
-     * WHEN the customer is requested
-     * THEN the Customer with the given ID should be returned.
+     * GIVEN a valid customer ID and a customer with that ID is in the system WHEN the customer is requested THEN the
+     * Customer with the given ID should be returned.
      */
-    @Test
-    // <-- (5) JUnit calls this test method
+    @Test // <-- (7) JUnit calls this test method
     void getCustomer_found() throws BusinessException {
 
         // GIVEN a valid customer ID and a customer with that ID is in the system
@@ -77,9 +78,8 @@ class CustomerServiceTest extends BaseTest { // <-- (1) JUnit instantiates a new
     }
 
     /**
-     * GIVEN a customer ID
-     * WHEN the customer is requested, but the customer is NOT in the system
-     * THEN null should be returned.
+     * GIVEN a customer ID WHEN the customer is requested, but the customer is NOT in the system THEN null should be
+     * returned.
      */
     @Test
     void getCustomer_notFound() throws BusinessException {
@@ -101,11 +101,9 @@ class CustomerServiceTest extends BaseTest { // <-- (1) JUnit instantiates a new
     }
 
     /**
-     * GIVEN a customer ID
-     * WHEN the customer ID is checked to see if it is valid
-     * THEN false should be returned if the customer ID is null
-     * AND false should be returned if the customer ID is a negative number
-     * AND true should be returned if the customer ID is a positive number
+     * GIVEN a customer ID WHEN the customer ID is checked to see if it is valid THEN false should be returned if the
+     * customer ID is null AND false should be returned if the customer ID is a negative number AND true should be
+     * returned if the customer ID is a positive number
      * <p>
      * DEVELOPER NOTE: Notice the use of @ParameterizedTest and @CsvSource here. This will cause JUnit to call this
      * method once for each of the (comma-delimited) strings in the given array.
@@ -116,5 +114,4 @@ class CustomerServiceTest extends BaseTest { // <-- (1) JUnit instantiates a new
         assertEquals(expected, customerServiceSpy.isValidCustomerId(customerId));
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
 }

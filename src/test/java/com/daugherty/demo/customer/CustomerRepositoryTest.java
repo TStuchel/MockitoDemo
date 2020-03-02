@@ -26,16 +26,15 @@ class CustomerRepositoryTest extends BaseTest {
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
-    @Autowired
+    @Autowired // <-- Required pattern when using @DataJpaTest so that it can wire in the JPA manager instance
     private TestEntityManager entityManager;
 
     /**
      * Class under test (spied to test protected methods)
      */
-    @Autowired
+    @Autowired // <-- Required pattern when using @DataJpaTest
     private CustomerRepository customerRepository;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
@@ -58,5 +57,4 @@ class CustomerRepositoryTest extends BaseTest {
         assertEquals(expectedCustomer, actualCustomer);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
 }

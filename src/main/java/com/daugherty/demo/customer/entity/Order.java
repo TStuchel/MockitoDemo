@@ -35,5 +35,4 @@ public class Order implements Serializable {
     @JoinColumn(name = "CUST_ID")
     private Customer customer;
 
-    // -----------------------------------------------------------------------------------------------------------------
 }

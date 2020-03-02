@@ -22,6 +22,4 @@ public class Test_AppConfigurationTest extends BaseAppConfigurationTest {
         assertAppConfiguration("demo-test");
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
 }

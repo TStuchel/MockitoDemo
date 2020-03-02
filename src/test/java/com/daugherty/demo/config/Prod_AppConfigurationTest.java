@@ -22,5 +22,4 @@ public class Prod_AppConfigurationTest extends BaseAppConfigurationTest {
         assertAppConfiguration("demo-prod");
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
 }

@@ -2,6 +2,7 @@ package com.daugherty.demo.customer;
 
 import com.daugherty.demo.customer.entity.Customer;
 import com.daugherty.demo.exception.BusinessException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
  * @see com.daugherty.demo.customer.CustomerRepository
  */
 @Service
+@RequiredArgsConstructor
 class CustomerService {
 
     // ------------------------------------------------- DEPENDENCIES --------------------------------------------------
@@ -37,21 +39,11 @@ class CustomerService {
      */
     private final CustomerRepository customerRepository;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // -------------------------------------------------- VARIABLES ----------------------------------------------------
 
     public static final String INVALID_CUSTOMER_ID = "Invalid customer ID [%s]";
 
-    // -----------------------------------------------------------------------------------------------------------------
-
-    // ------------------------------------------------- CONSTRUCTORS --------------------------------------------------
-
-    CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------ PUBLIC METHODS -------------------------------------------------
 
@@ -74,7 +66,6 @@ class CustomerService {
         return customerRepository.findById(customerId).orElse(null);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------ PRIVATE METHODS ------------------------------------------------
 
@@ -85,6 +76,5 @@ class CustomerService {
         return (customerId != null) && (customerId > 0);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
 
 }

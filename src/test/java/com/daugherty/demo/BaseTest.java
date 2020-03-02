@@ -32,9 +32,6 @@ public abstract class BaseTest {
      * Initialize Mockito
      */
     protected void setup() {
-
-        // Initialize Mockito mocked dependencies
-        MockitoAnnotations.initMocks(this);
         initLogging();
     }
 
@@ -61,7 +58,5 @@ public abstract class BaseTest {
         podam.setLevel(Level.ERROR);
         podam.setAdditive(true);
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
 }

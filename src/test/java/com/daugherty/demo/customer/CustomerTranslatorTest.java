@@ -5,10 +5,14 @@ import com.daugherty.demo.customer.contract.CustomerDTO;
 import com.daugherty.demo.customer.entity.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 
+@ExtendWith(MockitoExtension.class)
 public class CustomerTranslatorTest extends BaseTest {
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
@@ -16,18 +20,15 @@ public class CustomerTranslatorTest extends BaseTest {
     /**
      * Class under test (spied to test protected methods)
      */
+    @Spy
     private CustomerTranslator customerTranslatorSpy;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
     @BeforeEach
-    public void setup() {
+    public void beforeEach() {
         super.setup();
-
-        // Create a spy so that protected methods can/may be mocked
-        customerTranslatorSpy = spy(new CustomerTranslator());
     }
 
     /**
@@ -139,5 +140,4 @@ public class CustomerTranslatorTest extends BaseTest {
         assertEquals(customer.getLastReadTimestamp(), customerDto.getLastReadTimestamp());
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
 }

@@ -10,7 +10,9 @@ import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,7 +48,6 @@ class CustomerControllerTest extends BaseTest {
     @Mock
     private CustomerTranslator customerTranslator_mock;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
@@ -66,18 +67,16 @@ class CustomerControllerTest extends BaseTest {
     /**
      * Class under test (spied to test protected methods)
      */
+    @Spy
+    @InjectMocks
     private CustomerController customerControllerSpy;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
     @BeforeEach
-    public void setup() {
+    public void beforeEach() {
         super.setup();
-
-        // Create a spy so that protected methods can/may be mocked
-        customerControllerSpy = spy(new CustomerController(customerTranslator_mock, customerService_mock));
 
         // Set up Mock MVC for HTTP calls. DEVELOPER NOTE: This makes Spring send requests to our spied controller,
         // instead of whatever controller component it would have created and wired up itself.

@@ -40,7 +40,6 @@ public abstract class BaseAppConfigurationTest extends BaseTest {
     @Autowired
     protected AppConfiguration appConfiguration;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
@@ -61,7 +60,5 @@ public abstract class BaseAppConfigurationTest extends BaseTest {
         assertNotNull(appConfiguration.getEnvironment());
         assertFalse(appConfiguration.getServers().isEmpty());
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
 }

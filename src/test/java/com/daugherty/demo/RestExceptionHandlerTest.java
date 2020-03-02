@@ -3,6 +3,9 @@ package com.daugherty.demo;
 import com.daugherty.demo.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
@@ -12,20 +15,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
+@ExtendWith(MockitoExtension.class)
 class RestExceptionHandlerTest extends BaseTest {
 
     // ----------------------------------------------- MEMBER VARIABLES ------------------------------------------------
 
+    /**
+     * Class under test (spied to test protected methods)
+     */
+    @Spy
     private RestExceptionHandler restExceptionHandlerSpy;
 
-    // -----------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------- TEST METHODS --------------------------------------------------
 
     @BeforeEach
-    public void setup() {
+    public void beforeEach() {
         super.setup();
-        restExceptionHandlerSpy = spy(new RestExceptionHandler());
     }
 
     /**
@@ -80,5 +86,4 @@ class RestExceptionHandlerTest extends BaseTest {
         assertEquals(expectedException.getMessage(), actualException.getMessage());
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
 }
