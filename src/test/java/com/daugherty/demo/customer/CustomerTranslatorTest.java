@@ -10,7 +10,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerTranslatorTest extends BaseTest {
@@ -44,7 +43,7 @@ public class CustomerTranslatorTest extends BaseTest {
     void toEntity_emptyTranslation() {
 
         // GIVEN an empty CustomerDTO
-        CustomerDTO customerDto = new CustomerDTO();
+        CustomerDTO customerDto = CustomerDTO.builder().build();
 
         // WHEN the CustomerDTO is translated to a Customer entity
         Customer customer = customerTranslatorSpy.toEntity(customerDto);
@@ -93,8 +92,8 @@ public class CustomerTranslatorTest extends BaseTest {
      * THEN a CustomerDTO contract should be returned
      * AND all fields of the Customer should be correctly mapped.
      * <p>
-     * DEVELOPER NOTE: There should be a test that verifies an entity can be mapped where all of the fields haven't
-     * been set. This/protects against null pointer exceptions and verifies default values given to optional fields.
+     * DEVELOPER NOTE: There should be a test that verifies an entity can be mapped where all of the fields haven't been
+     * set. This/protects against null pointer exceptions and verifies default values given to optional fields.
      */
     @Test
     void toContract_emptyTranslation() {
